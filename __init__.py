@@ -18,8 +18,6 @@ from . import lang
 from . import git
 from bpy.app.handlers import persistent
 
-sys.dont_write_bytecode = True
-
 def update_history(context) :
 	if not git.is_initialized( context ) :
 		return
@@ -37,18 +35,18 @@ def git_root_path(context, path) :
 	return bpy.path.relpath( path, context.scene.nclr_versioning.work_dir ).lstrip( "/" )
 
 class HistoryEntry(bpy.types.PropertyGroup) :
-	message = bpy.props.StringProperty( name = "message" )
-	date = bpy.props.StringProperty( name = "date" )
-	hash = bpy.props.StringProperty( name = "hash" )
+	message = bpy.props.StringProperty()
+	date = bpy.props.StringProperty()
+	hash = bpy.props.StringProperty()
 
 class VersioningContext(bpy.types.PropertyGroup) :
-	work_dir = bpy.props.StringProperty( name = "work_dir" )
-	history = bpy.props.CollectionProperty( type = HistoryEntry, name = "history" )
-	history_index = bpy.props.IntProperty( name = "history_index" )
+	work_dir = bpy.props.StringProperty()
+	history = bpy.props.CollectionProperty( type = HistoryEntry )
+	history_index = bpy.props.IntProperty()
 
 class Init(bpy.types.Operator) :
 	bl_idname = "nclr_versioning.init"
-	bl_label = bpy.app.translations.pgettext( "Initialize" )
+	bl_label = "Initialize"
 
 	def execute(self, context) :
 		return { "FINISHED" }
@@ -57,14 +55,14 @@ class CommitMessageDialog(bpy.types.Operator) :
 	bl_idname = "object.nclr_versioning_commit_message_dialog"
 	bl_label = "Input commit message"
 
-	message = bpy.props.StringProperty( name = "message" )
+	message = bpy.props.StringProperty( name = "Message" )
 
 	def invoke(self, context, event) :
 		return context.window_manager.invoke_props_dialog( self )
 
 	def execute(self, context) :
 		if message == "" :
-			self.report( { "ERROR" }, "no message" )
+			self.report( { "ERROR" }, bpy.app.translations.pgettext( "no message" ) )
 			return { "CANCELLED" }
 		git.add( context, [git_root_path( context, bpy.data.filepath )] )
 		git.commit( context, self.message )
@@ -84,7 +82,7 @@ class OutputAsFile(bpy.types.Operator) :
 	bl_label = "Output as File"
 
 	filepath = bpy.props.StringProperty( subtype = "FILE_PATH" )
-	check_existing = bpy.props.BoolProperty( name = "Check Existing", default = True, options = { "HIDDEN" } )
+	check_existing = bpy.props.BoolProperty( default = True, options = { "HIDDEN" } )
 
 	def invoke(self, context, event) :
 		context.window_manager.fileselect_add( self )
@@ -137,16 +135,16 @@ def file_handler(dummy) :
 
 def register() :
 	bpy.utils.register_module( __name__ )
-	bpy.app.translations.register( __name__, lang.text_dir )
-	bpy.types.Scene.nclr_versioning = bpy.props.PointerProperty( type = VersioningContext, name = "nclr_versioning_context" )
+	bpy.types.Scene.nclr_versioning = bpy.props.PointerProperty( type = VersioningContext )
 	bpy.app.handlers.load_post.append( file_handler )
 	bpy.app.handlers.save_post.append( file_handler )
+	bpy.app.translations.register( __name__, lang.tranlation_dict )
 
 def unregister() :
+	bpy.app.translations.unregister( __name__ )
 	bpy.app.handlers.load_post.remove( file_handler )
 	bpy.app.handlers.save_post.remove( file_handler )
 	del bpy.types.Scene.nclr_versioning
-	bpy.app.translations.unregister( __name__ )
 	bpy.utils.register_module( __name__ )
 
 if __name__ == "__main__" :

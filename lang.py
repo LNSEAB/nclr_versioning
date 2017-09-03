@@ -1,10 +1,11 @@
-text_dir = {
+tranlation_dict = {
 	"ja_JP" : {
-		( "*", "Commit" ) : "コミット",
-		( "*", "Output as File" ) : "ファイルとして出力",
-		( "*", "Initialize" ) : "初期化",
+		( "Operator", "Initialize" ) : "初期化",
 		( "*", "Versioning" ) : "バージョン管理",
-		( "*", "Input commit message" ) : "更新内容を入力してください",
+		( "Operator", "Commit" ) : "コミット",
+		( "Operator", "Output as File" ) : "ファイルとして出力",
+		( "Operator", "Input commit message" ) : "更新内容を入力してください",
 		( "*", "Git Execute Path" ) : "Gitの実行ファイルパス",
+		( "*", "no message" ) : "更新内容を入力していません",
 	}
 }
