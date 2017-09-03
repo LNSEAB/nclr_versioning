@@ -52,11 +52,9 @@ def add(context, files) :
 	return __command( context, "add", files )
 
 def commit(context, msg) :
-	assert isinstance( files, list )
 	return __command( context, "commit", ["-m", msg] )
 
 def commit_amend(context, msg) :
-	assert isinstance( files, list )
 	return __command( context, "commit", ["--amend", "-m", msg] )
 
 def cat_file(context, hash, file) :

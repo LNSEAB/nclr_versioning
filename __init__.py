@@ -61,7 +61,7 @@ class CommitMessageDialog(bpy.types.Operator) :
 		return context.window_manager.invoke_props_dialog( self )
 
 	def execute(self, context) :
-		if message == "" :
+		if self.message == "" :
 			self.report( { "ERROR" }, bpy.app.translations.pgettext( "no message" ) )
 			return { "CANCELLED" }
 		git.add( context, [git_root_path( context, bpy.data.filepath )] )
@@ -75,6 +75,31 @@ class Commit(bpy.types.Operator) :
 
 	def execute(self, context) :
 		bpy.ops.object.nclr_versioning_commit_message_dialog( "INVOKE_DEFAULT" )
+		return { "FINISHED" }
+
+class CommitAmendMessageDialog(bpy.types.Operator) :
+	bl_idname = "object.nclr_versioning_commit_amend_message_dialog"
+	bl_label = "Input commit message"
+
+	message = bpy.props.StringProperty( name = "Message" )
+
+	def invoke(self, context, event) :
+		return context.window_manager.invoke_props_dialog( self )
+
+	def execute(self, context) :
+		if self.message == "" :
+			self.report( { "ERROR" }, bpy.app.translations.pgettext( "no message" ) )
+			return { "CANCELLED" }
+		git.commit_amend( context, self.message )
+		update_history( context )
+		return { "FINISHED" }
+
+class CommitAmend(bpy.types.Operator) :
+	bl_idname = "nclr_versioning.commit_amend"
+	bl_label = "Amend"
+
+	def execute(self, context) :
+		bpy.ops.object.nclr_versioning_commit_amend_message_dialog( "INVOKE_DEFAULT" )
 		return { "FINISHED" }
 
 class OutputAsFile(bpy.types.Operator) :
@@ -116,6 +141,7 @@ class VersioningPanel(bpy.types.Panel) :
 			rows = 5
 		)
 		self.layout.operator( Commit.bl_idname )
+		self.layout.operator( CommitAmend.bl_idname )
 		self.layout.separator()
 		self.layout.operator( OutputAsFile.bl_idname )
 
