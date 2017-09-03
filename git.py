@@ -1,6 +1,9 @@
 # coding : utf-8
 #
-# nclr_versioning/
+# nclr_versioning/git.py
+#
+# released under the MIT License.
+# https://opensource.org/licenses/mit-license.php
 #
 
 import subprocess

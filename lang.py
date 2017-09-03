@@ -1,3 +1,11 @@
+# coding : utf-8
+#
+# nclr_versioning/lang.py
+#
+# released under the MIT License.
+# https://opensource.org/licenses/mit-license.php
+#
+
 tranlation_dict = {
 	"ja_JP" : {
 		( "Operator", "Initialize" ) : "初期化",
