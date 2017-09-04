@@ -52,6 +52,7 @@ class Init(bpy.types.Operator) :
 	bl_label = "Initialize"
 
 	def execute(self, context) :
+		git.init( context )
 		return { "FINISHED" }
 
 class CommitMessageDialog(bpy.types.Operator) :
@@ -131,11 +132,10 @@ class VersioningPanel(bpy.types.Panel) :
 	bl_region_type = "TOOLS"
 	bl_category = "Versioning"
 
-	@classmethod
-	def poll(cls, context) :
-		return ( context.object is not None )
-
 	def draw(self, context) :
+		if not git.is_initialized( context ) :
+			self.layout.operator( Init.bl_idname )
+			return
 		self.layout.label( "History" )
 		self.layout.template_list( 
 			"UI_UL_list", "history_list", 
