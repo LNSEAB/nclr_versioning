@@ -125,6 +125,28 @@ class OutputAsFile(bpy.types.Operator) :
 		fp.close()
 		return { "FINISHED" }
 
+class ReplaceDialog(bpy.types.Operator) :
+	bl_idname = "object.nclr_versioning_replace_dialog"
+	bl_label = "Are you really OK?"
+
+	def invoke(self, context, event) :
+		return context.window_manager.invoke_props_dialog( self )
+
+	def execute(self, context) :
+		index = context.scene.nclr_versioning.history_index
+		hash = context.scene.nclr_versioning.history[index].hash
+		git.checkout( context, hash, git_root_path( context, bpy.data.filepath ) )
+		bpy.ops.wm.open_mainfile( filepath = bpy.data.filepath )
+		return { "FINISHED" }
+
+class Replace(bpy.types.Operator) :
+	bl_idname = "nclr_versioning.replace"
+	bl_label = "Replace"
+
+	def execute(self, context) :
+		bpy.ops.object.nclr_versioning_replace_dialog( "INVOKE_DEFAULT" )
+		return { "FINISHED" }
+
 class VersioningPanel(bpy.types.Panel) :
 	bl_idname = "OBJECT_PT_nclr_versioning_panel"
 	bl_label = "Versioning"
@@ -147,6 +169,8 @@ class VersioningPanel(bpy.types.Panel) :
 		self.layout.operator( CommitAmend.bl_idname )
 		self.layout.separator()
 		self.layout.operator( OutputAsFile.bl_idname )
+		self.layout.separator()
+		self.layout.operator( Replace.bl_idname )
 
 class VersioningPreferences(bpy.types.AddonPreferences) :
 	bl_idname = __package__

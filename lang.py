@@ -16,5 +16,7 @@ tranlation_dict = {
 		( "Operator", "Input commit message" ) : "更新内容を入力してください",
 		( "*", "Git Execute Path" ) : "Gitの実行ファイルパス",
 		( "*", "no message" ) : "更新内容を入力していません",
+		( "Operator", "Replace" ) : "置き換え",
+		( "Operator", "Are you really OK?" ) : "本当にいいですか?",
 	}
 }

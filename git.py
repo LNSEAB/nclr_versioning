@@ -62,3 +62,6 @@ def commit_amend(context, msg) :
 
 def cat_file(context, hash, file) :
 	return __command( context, "cat-file", ["-p", hash + ":" + file] )
+
+def checkout(context, hash, file) :
+	return __command( context, "checkout", [hash, file] )
