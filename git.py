@@ -34,7 +34,7 @@ def init(context) :
 
 def status(context, files) :
 	assert isinstance( files, list )
-	lines = __command( context, "status", ["--short"] + files ).stdout.decode( "utf-8" ).split( "\n" )
+	lines = __command( context, "status", ["--short"] + ["\"" + s + "\"" for s in files] ).stdout.decode( "utf-8" ).split( "\n" )
 	items = []
 	for i in range( 0, len( lines ) - 1 ) :
 		items.append( ( ines[i][3:].rstrip(), lines[i][:2] ) )
@@ -52,7 +52,7 @@ def log(context) :
 
 def add(context, files) :
 	assert isinstance( files, list )
-	return __command( context, "add", files )
+	return __command( context, "add", ["\"" + s + "\"" for s in files] )
 
 def commit(context, msg) :
 	return __command( context, "commit", ["-m", msg] )
@@ -61,7 +61,7 @@ def commit_amend(context, msg) :
 	return __command( context, "commit", ["--amend", "-m", msg] )
 
 def cat_file(context, hash, file) :
-	return __command( context, "cat-file", ["-p", hash + ":" + file] )
+	return __command( context, "cat-file", ["-p", hash + ":\"" + file] + "\"" )
 
 def checkout(context, hash, file) :
-	return __command( context, "checkout", [hash, file] )
+	return __command( context, "checkout", [hash, "\"" + file + "\""] )
